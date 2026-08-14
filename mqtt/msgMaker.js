@@ -6,9 +6,9 @@
     "value": 1234
 } */
 
-import { getUUID } from './uuid.js'
+import { getUUID } from '../tools/uuid.js'
 
-import { uuidAdd, uuidList, uuidRemove } from './uuidPool.js'
+import { uuidAdd, uuidList, uuidRemove } from '../tools/uuidPool.js'
 
 function msgMaker(data){
     let uuid = getUUID();
@@ -17,7 +17,7 @@ function msgMaker(data){
         "uuid": uuid,
         "node": data.node,
         "group": data.group,
-        "tags": data.tags,
+        "tag": data.tag,
         "value": data.value
     }
     return msg;

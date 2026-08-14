@@ -3,6 +3,7 @@ import { mqttBroker, reqWrite, respWrite, main } from '../config.js';
 import { msgParser, respParser } from './parser.js';
 import { uuidRemove } from '../tools/uuidPool.js';
 import { updateDB } from './updataDB.js';
+import { syncData } from './syncData.js';
 
 // 使用闭包存储私有变量
 let client = null;
@@ -10,7 +11,7 @@ let client = null;
 // 内部处理函数
 const handleMessage = (topic, message) => {
     const msgString = message.toString();
-    console.log(`Received message from ${topic}: ${msgString}`);
+    // console.log(`Received message from ${topic}: ${msgString}`);
 
     if (topic === respWrite) {
         const status = respParser(msgString);
@@ -25,6 +26,7 @@ const handleMessage = (topic, message) => {
         const data = msgParser(msgString);
         try {
             updateDB(data);
+            syncData(data);
         } catch (e) {
             console.error('更新数据库失败:', e);
         }
@@ -84,4 +86,5 @@ export {
     initMqtt,
     mqttPublish,
     getMqttClient,
+    reqWrite
 }
