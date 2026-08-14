@@ -1,0 +1,19 @@
+{
+  "name": "controlsystemnew",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "NightCandle",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "mqtt": "^5.15.2"
+  }
+}
