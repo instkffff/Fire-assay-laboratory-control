@@ -28,14 +28,15 @@ const setVfd = async (data) => {
     const isF1Trigger = data?.values?.f1 !== undefined
     const isF2Trigger = data?.values?.f2 !== undefined
     const isScadaValveTrigger =
-        (data?.node === 'Scada1' || data?.node === 'Scada2') &&
+        (data?.node === 'System1' || data?.node === 'System2') &&
         data?.group &&
-        ['valve1', 'valve2', 'valve3', 'valve4', 'valve5', 'valve6', 'valve7'].includes(data.group)
+        ['valve1', 'valve2', 'valve3', 'valve4', 'valve5', 'valve6', 'valve7'].includes(data.group) &&
+        (data?.values?.windH !== undefined || data?.values?.windL !== undefined)
 
     if (!isKsetTrigger && !isVfdInPowerTrigger && !isF1Trigger && !isF2Trigger && !isScadaValveTrigger) {
         return
     }
-    
+
     // 2. 获取 k 值
     const kValues = Array.from({ length: 8 }, (_, i) =>
         getValue('Switch', 'kset', `K${i + 1}`)
