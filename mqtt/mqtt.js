@@ -6,6 +6,8 @@ import { updateDB } from './updataDB.js';
 import { syncData } from './syncData.js';
 
 import { setValve } from '../dataflow/setValve.js';
+import { setVfd } from '../dataflow/setVfd.js';
+
 
 let client = null;
 
@@ -28,6 +30,7 @@ const handleMain = (msgString) => {
         updateDB(data);
         syncData(data);
         setValve(data);
+        setVfd(data);
     } catch (e) {
         console.error('更新数据库失败:', e);
     }

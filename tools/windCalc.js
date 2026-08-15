@@ -10,7 +10,7 @@ function windOutCalc(baseWind, windNeed) {
     let step = baseWind - 4000;
     
     // 根据需求风量与基准风量的比例，在 4000 的基础上线性计算输出值
-    let windCalc = 4000 + step * (windNeed / baseWind);
+    let windCalc = 4000 + step * (windNeed / 100);
     
     // 向下取整
     let windOut = Math.floor(windCalc);
