@@ -1,7 +1,7 @@
 import { db } from './db.js';
 
 /**
- * 根据路径精准修改键值
+ * 根据路径精准修改键值（使用 SQLite 原生 JSON 函数，安全且高效）
  * @param {string} tableName - 表名 (例如 'System1')
  * @param {string} name - 组件名 (例如 'valve1')
  * @param {string} key - 具体的键 (例如 'windSet')
@@ -9,23 +9,16 @@ import { db } from './db.js';
  */
 function updateValue(tableName, name, key, value) {
     try {
-        // 1. 先读取当前的 JSON 字符串
-        const row = db.prepare(`SELECT value FROM ${tableName} WHERE name = ?`).get(name);
+        // 使用 SQLite 的 json_set 函数直接在数据库内部修改对应的键值
+        // $."key" 表示根路径下的键
+        const updateSql = `UPDATE ${tableName} SET value = json_set(value, '$.' || ?, ?) WHERE name = ?`;
         
-        if (!row) {
-            throw new Error(`未找到表 ${tableName} 中 name 为 ${name} 的记录`);
+        const info = db.prepare(updateSql).run(key, value, name);
+        
+        if (info.changes === 0) {
+            console.warn(`警告: 未找到表 ${tableName} 中 name 为 ${name} 的记录进行更新`);
+            return false;
         }
-
-        // 2. 解析 JSON 并修改具体键值
-        const data = JSON.parse(row.value);
-        if (!(key in data)) {
-            console.warn(`警告: 键 ${key} 不在 ${name} 的定义中，将创建新键`);
-        }
-        data[key] = value;
-
-        // 3. 将修改后的对象写回数据库
-        const updateSql = `UPDATE ${tableName} SET value = ? WHERE name = ?`;
-        db.prepare(updateSql).run(JSON.stringify(data), name);
         
         return true;
     } catch (err) {
