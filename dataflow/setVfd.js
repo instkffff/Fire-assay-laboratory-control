@@ -35,12 +35,7 @@ const setVfd = async (data) => {
     if (!isKsetTrigger && !isVfdInPowerTrigger && !isF1Trigger && !isF2Trigger && !isScadaValveTrigger) {
         return
     }
-
-    // 非 kset 触发时延迟 2 秒执行
-    if (!isKsetTrigger) {
-        await delay(2000)
-    }
-
+    
     // 2. 获取 k 值
     const kValues = Array.from({ length: 8 }, (_, i) =>
         getValue('Switch', 'kset', `K${i + 1}`)
