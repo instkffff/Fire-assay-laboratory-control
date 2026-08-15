@@ -5,6 +5,8 @@ import { uuidRemove } from '../tools/uuidPool.js';
 import { updateDB } from './updataDB.js';
 import { syncData } from './syncData.js';
 
+import { setValve } from '../dataflow/setValve.js';
+
 let client = null;
 
 // ---- 子逻辑：处理 respWrite 消息 ----
@@ -25,6 +27,7 @@ const handleMain = (msgString) => {
     try {
         updateDB(data);
         syncData(data);
+        setValve(data);
     } catch (e) {
         console.error('更新数据库失败:', e);
     }
