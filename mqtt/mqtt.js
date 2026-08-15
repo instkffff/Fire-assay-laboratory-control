@@ -86,6 +86,8 @@ const initMqtt = () => {
     client = mqtt.connect(mqttBroker, {
         clientId: 'control',
         connectTimeout: 4000,
+        reconnectPeriod: 5000, // 增加到 5 秒重连一次，避免频繁请求
+        clean: true,           // 如果不需要离线缓存会话，保持 true
     });
 
     bindEvents();
