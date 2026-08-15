@@ -14,7 +14,10 @@ const VFD_SCADA_PAIRS = [
     { scada: 'Scada2', fTag: 'f1', outTag: 'vfdOut2', inTag: 'vfdIn2' },
 ]
 
-const setVfd = (data) => {
+// 延迟工具函数
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+const setVfd = async (data) => {
 
     let S1vfdInPower = getValue('Scada1', 'system', 'vfdInPower')
     let S2vfdInPower = getValue('Scada2', 'system', 'vfdInPower')
@@ -31,6 +34,11 @@ const setVfd = (data) => {
 
     if (!isKsetTrigger && !isVfdInPowerTrigger && !isF1Trigger && !isF2Trigger && !isScadaValveTrigger) {
         return
+    }
+
+    // 非 kset 触发时延迟 2 秒执行
+    if (!isKsetTrigger) {
+        await delay(2000)
     }
 
     // 2. 获取 k 值
