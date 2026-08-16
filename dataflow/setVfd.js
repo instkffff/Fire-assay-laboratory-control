@@ -61,10 +61,10 @@ const setVfd = async (data) => {
         const sum = kIndices.reduce((sum, kIdx, arrIdx) => {
             const valveId = `valve${arrIdx + 1}`
             const key = kValues[kIdx - 1] === 1 ? 'windH' : 'windL'
-            return sum + (parseFloat(getValue(system, valveId, key)) || 0)
+            return sum + (getValue(system, valveId, key) || 0)
         }, 0)
         // 加上 valve5, valve6, valve7 的 windL
-        return sum + [5, 6, 7].reduce((s, v) => s + (parseFloat(getValue(system, `valve${v}`, 'windL')) || 0), 0)
+        return sum + [5, 6, 7].reduce((s, v) => s + (getValue(system, `valve${v}`, 'windL') || 0), 0)
     })
 
     console.log('WindSum1:', windSums[0], 'WindSum2:', windSums[1])
