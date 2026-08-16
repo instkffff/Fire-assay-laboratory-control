@@ -28,9 +28,13 @@ const setVfd = async (data) => {
     let S1vfdInPower = getValue('Scada1', 'system', 'vfdInPower')
     let S2vfdInPower = getValue('Scada2', 'system', 'vfdInPower')
 
+    let S1vfdOutPower = getValue('Scada1', 'system', 'vfdOutPower')
+    let S2vfdOutPower = getValue('Scada2', 'system', 'vfdOutPower')
+
     // 1. 数据校验与转换 - 允许 Switch/kset、vfdInPower、f1、f2、Scada1-2/valve1-7 触发
     const isKsetTrigger = data?.node === 'Switch' && data?.group === 'kset'
     const isVfdInPowerTrigger = data?.values?.vfdInPower !== undefined
+    const isVfdOutPowerTrigger = data?.values?.vfdOutPower !== undefined
     const isF1Trigger = data?.values?.f1 !== undefined
     const isF2Trigger = data?.values?.f2 !== undefined
     const isScadaValveTrigger =
@@ -39,7 +43,7 @@ const setVfd = async (data) => {
         ['valve1', 'valve2', 'valve3', 'valve4', 'valve5', 'valve6', 'valve7'].includes(data.group) &&
         (data?.values?.windH !== undefined || data?.values?.windL !== undefined)
 
-    if (!isKsetTrigger && !isVfdInPowerTrigger && !isF1Trigger && !isF2Trigger && !isScadaValveTrigger) {
+    if (!isKsetTrigger && !isVfdInPowerTrigger && !isVfdOutPowerTrigger && !isF1Trigger && !isF2Trigger && !isScadaValveTrigger) {
         return
     }
 
@@ -80,16 +84,18 @@ const setVfd = async (data) => {
         value: windOutCalc(fInValues[i], windSums[i]),
     }))
 
-    // 6. 根据 vfdInPower 条件控制 vfdIn 输出
+    // 6. 根据 vfdInPower 条件控制 vfdIn 输出，根据 vfdOutPower 条件控制 vfdOut 输出
     const vfdIn1Value = S1vfdInPower === 1 ? vfdInResults[0].value : 0
     const vfdIn2Value = S2vfdInPower === 1 ? vfdInResults[1].value : 0
+    const vfdOut1Value = S1vfdOutPower === 1 ? vfdOutResults[0].value : 0
+    const vfdOut2Value = S2vfdOutPower === 1 ? vfdOutResults[1].value : 0
 
     // 7. 发送 MQTT 消息
     const messages = [
         { node: 'Switch', group: 'vfd', tag: vfdInResults[0].tag, value: vfdIn1Value },
-        { node: 'Switch', group: 'vfd', tag: vfdOutResults[0].tag, value: vfdOutResults[0].value },
+        { node: 'Switch', group: 'vfd', tag: vfdOutResults[0].tag, value: vfdOut1Value },
         { node: 'Switch', group: 'vfd', tag: vfdInResults[1].tag, value: vfdIn2Value },
-        { node: 'Switch', group: 'vfd', tag: vfdOutResults[1].tag, value: vfdOutResults[1].value },
+        { node: 'Switch', group: 'vfd', tag: vfdOutResults[1].tag, value: vfdOut2Value },
         { node: 'Scada1', group: 'system', tag: 'windNeed', value: windSums[0] },
         { node: 'Scada2', group: 'system', tag: 'windNeed', value: windSums[1] },
         { node: 'Scada1', group: 'system', tag: 'windInNeed', value: S1vfdInPower === 1 ? windSums[0] : 0 },
