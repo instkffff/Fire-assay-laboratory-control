@@ -9,9 +9,15 @@ const SYSTEM_CONFIG = [
     { kIndices: [5, 6, 7, 8], system: 'System2' },
 ]
 
-const VFD_SCADA_PAIRS = [
-    { scada: 'Scada1', fTag: 'f1', outTag: 'vfdOut1', inTag: 'vfdIn1' },
-    { scada: 'Scada2', fTag: 'f1', outTag: 'vfdOut2', inTag: 'vfdIn2' },
+// f1 对应 vfdOut（频率输出），f2 对应 vfdIn（频率输入）
+const VFD_OUT_PAIRS = [
+    { scada: 'Scada1', fTag: 'f1', tag: 'vfdOut1' },
+    { scada: 'Scada2', fTag: 'f1', tag: 'vfdOut2' },
+]
+
+const VFD_IN_PAIRS = [
+    { scada: 'Scada1', fTag: 'f2', tag: 'vfdIn1' },
+    { scada: 'Scada2', fTag: 'f2', tag: 'vfdIn2' },
 ]
 
 // 延迟工具函数
@@ -42,8 +48,11 @@ const setVfd = async (data) => {
         getValue('Switch', 'kset', `K${i + 1}`)
     )
 
-    // 3. 获取 VFD 频率设定值
-    const fValues = VFD_SCADA_PAIRS.map(({ scada, fTag }) =>
+    // 3. 分别获取 VFD 输出频率(f1)和输入频率(f2)设定值
+    const fOutValues = VFD_OUT_PAIRS.map(({ scada, fTag }) =>
+        getValue(scada, 'vfd', fTag)
+    )
+    const fInValues = VFD_IN_PAIRS.map(({ scada, fTag }) =>
         getValue(scada, 'vfd', fTag)
     )
 
@@ -60,28 +69,27 @@ const setVfd = async (data) => {
 
     console.log('WindSum1:', windSums[0], 'WindSum2:', windSums[1])
 
-    // 5. 计算 VFD 输出
-    const vfdResults = VFD_SCADA_PAIRS.map(({ outTag, inTag }, i) => {
-        const f = fValues[i]
-        const wind = windSums[i]
-        return {
-            out: { tag: outTag, value: windOutCalc(f, wind) },
-            in: { tag: inTag, value: windOutCalc(f, wind) },
-        }
-    })
+    // 5. 计算 VFD 输出（out 使用 f1，in 使用 f2）
+    const vfdOutResults = VFD_OUT_PAIRS.map(({ tag }, i) => ({
+        tag,
+        value: windOutCalc(fOutValues[i], windSums[i]),
+    }))
+
+    const vfdInResults = VFD_IN_PAIRS.map(({ tag }, i) => ({
+        tag,
+        value: windOutCalc(fInValues[i], windSums[i]),
+    }))
 
     // 6. 根据 vfdInPower 条件控制 vfdIn 输出
-    // S1vfdInPower=0 -> vfdIn1=0; S1vfdInPower=1 -> vfdIn1=计算值
-    // S2vfdInPower=0 -> vfdIn2=0; S2vfdInPower=1 -> vfdIn2=计算值
-    const vfdIn1Value = S1vfdInPower === 1 ? vfdResults[0].in.value : 0
-    const vfdIn2Value = S2vfdInPower === 1 ? vfdResults[1].in.value : 0
+    const vfdIn1Value = S1vfdInPower === 1 ? vfdInResults[0].value : 0
+    const vfdIn2Value = S2vfdInPower === 1 ? vfdInResults[1].value : 0
 
     // 7. 发送 MQTT 消息
     const messages = [
-        { node: 'Switch', group: 'vfd', tag: vfdResults[0].in.tag, value: vfdIn1Value },
-        { node: 'Switch', group: 'vfd', tag: vfdResults[0].out.tag, value: vfdResults[0].out.value },
-        { node: 'Switch', group: 'vfd', tag: vfdResults[1].in.tag, value: vfdIn2Value },
-        { node: 'Switch', group: 'vfd', tag: vfdResults[1].out.tag, value: vfdResults[1].out.value },
+        { node: 'Switch', group: 'vfd', tag: vfdInResults[0].tag, value: vfdIn1Value },
+        { node: 'Switch', group: 'vfd', tag: vfdOutResults[0].tag, value: vfdOutResults[0].value },
+        { node: 'Switch', group: 'vfd', tag: vfdInResults[1].tag, value: vfdIn2Value },
+        { node: 'Switch', group: 'vfd', tag: vfdOutResults[1].tag, value: vfdOutResults[1].value },
         { node: 'Scada1', group: 'system', tag: 'windNeed', value: windSums[0] },
         { node: 'Scada2', group: 'system', tag: 'windNeed', value: windSums[1] },
         { node: 'Scada1', group: 'system', tag: 'windInNeed', value: S1vfdInPower === 1 ? windSums[0] : 0 },
