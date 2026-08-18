@@ -1,4 +1,4 @@
-const mqttBroker = 'mqtt://192.168.50.100:1883';
+const mqttBroker = 'mqtt://192.168.50.188:1883';
 
 const reqWrite = '/neuron/system/write/req';
 
