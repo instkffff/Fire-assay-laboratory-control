@@ -42,7 +42,7 @@ const Scada1 = {
     valve6: ['windNeed', 'windReal', 'windL', 'windH'],
     valve7: ['windNeed', 'windReal', 'windL', 'windH'],
     kset: ['K1', 'K2', 'K3', 'K4'],
-    system: ['windNeed', 'windReal', 'windInNeed', 'tempPV', 'tempSV', 'on_off', 'vfdInPower'],
+    system: ['windNeed', 'windReal', 'windInNeed', 'tempPV', 'tempSV', 'on_off', 'vfdInPower', 'vfdOutPower'],
     vfd: ['f1', 'f2']
 }
 
@@ -55,7 +55,7 @@ const Scada2 = {
     valve6: ['windNeed', 'windReal', 'windL', 'windH'],
     valve7: ['windNeed', 'windReal', 'windL', 'windH'],
     kset: ['K1', 'K2', 'K3', 'K4'],
-    system: ['windNeed', 'windReal', 'windInNeed', 'tempPV', 'tempSV', 'on_off', 'vfdInPower'],
+    system: ['windNeed', 'windReal', 'windInNeed', 'tempPV', 'tempSV', 'on_off', 'vfdInPower', 'vfdOutPower'],
     vfd: ['f1', 'f2']
 }
 
