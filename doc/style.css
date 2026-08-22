@@ -1,0 +1,133 @@
+/* 基础排版 */
+body {
+    font-family: "Segoe UI", "微软雅黑", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    /* 统一行高：确保所有纯文本内容基础间距一致 */
+    line-height: 1.6; 
+    color: #000000;
+    padding: 0 25px;
+    word-wrap: break-word;
+    background-color: #fff;
+}
+
+/* 统一段落、列表、块元素的上下间距 */
+p, blockquote, ul, ol, dl, table, pre {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+li > p { margin-bottom: 0px; }
+
+/* 标题 - 严格对应原文件像素值 */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+h1 { font-size: 32px; padding-bottom: 0.3em; border-bottom: 1px solid #eee; }
+h2 { font-size: 28px; padding-bottom: 0.3em; border-bottom: 1px solid #eee; }
+h3 { font-size: 24px; }
+h4 { font-size: 20px; }
+h5 { font-size: 18px; }
+h6 { font-size: 16px; }
+
+/* 链接 */
+a { color: #4078c0; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* 引用 */
+blockquote {
+    padding: 0 1em;
+    color: #777;
+    border-left: 1px solid #ddd; /* 稍微加粗边框更有质感 */
+}
+
+/* 列表 - 关键优化区 */
+ul, ol { 
+    padding-left: 2em; 
+}
+
+/* 确保列表项内部的行高与 body 一致，且列表项之间有微小间距 */
+li {
+    line-height: 1.6;
+}
+
+/* 解决多级列表嵌套时的间距问题 */
+li > ul, li > ol {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+/* 列表项之间的间距：设置为 0.25em 保持紧凑且清晰 */
+li + li { margin-top: 0.25em; }
+
+/* 代码与预格式化 - 严格对应 12px */
+code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 14px; 
+    padding: 0.2em 0.4em;
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+pre {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 14px;
+    padding: 16px;
+    overflow: auto;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border-radius: 3px;
+}
+
+pre code { 
+    font-size: 100%; 
+    background: transparent; 
+    padding: 0; 
+}
+
+/* 表格特性 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table tr {
+    background-color: #fff;
+    border-top: 1px solid #ccc;
+}
+
+table tr:nth-child(2n) {
+    background-color: #f8f8f8;
+}
+
+table th, table td {
+    padding: 6px 13px;
+    border: 1px solid #ddd;
+    text-align: left; /* 改为左对齐通常更符合阅读习惯，可按需改回 center */
+}
+
+table th { font-weight: bold; }
+
+/* 分隔线 */
+hr {
+    height: 1px;
+    border: none;
+    background-color: #eee;
+    margin: 24px 0;
+}
+
+/* 修正之前定义的全局 img 样式，防止其干扰行内小图标 */
+img { 
+    max-width: 100%; 
+    /* padding: 16px;  <- 建议删除这一行，改用下面的方式 */
+}
+
+/* 只有单独成行的图片（大图）才应用大边距 */
+p > img:only-child {
+    display: block;
+    margin: 16px auto;
+    padding: 0;
+}
