@@ -1,4 +1,4 @@
-const mqttBroker = 'mqtt://192.168.50.188:1883';
+const mqttBroker = 'mqtt://172.24.165.240:1883';
 
 const reqWrite = '/neuron/system/write/req';
 
@@ -30,7 +30,7 @@ const System2 = {
 
 const Switch = {
     kset: ['K1', 'K2', 'K3', 'K4', 'K5', 'K6', 'K7', 'K8'],
-    vfd: ['vfdIn1', 'vfdOut1', 'vfdIn2', 'vfdOut2']
+    vfd: ['vfdIn1', 'vfdOut1', 'vfdIn2', 'vfdOut2', 'vfdIn1X', 'vfdOut1X', 'vfdIn2X', 'vfdOut2X']
 }
 
 const Scada1 = {

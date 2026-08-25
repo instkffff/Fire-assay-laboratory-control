@@ -76,6 +76,32 @@ const dataLink = {
                 ['kset'],
                 ['K1', 'K2', 'K3', 'K4']
             ]
+        ],
+    7:
+        [
+            [
+                ['Scada1'],
+                ['system'],
+                ['vfdInPower', 'vfdOutPower']
+            ],
+            [
+                ['Switch'],
+                ['vfd'],
+                ['vfdIn1X', 'vfdOut1X']
+            ]
+        ],
+    8:
+        [
+            [
+                ['Scada2'],
+                ['system'],
+                ['vfdInPower', 'vfdOutPower']
+            ],
+            [
+                ['Switch'],
+                ['vfd'],
+                ['vfdIn2X', 'vfdOut2X']
+            ]
         ]
 }
 
