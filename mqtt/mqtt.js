@@ -2,7 +2,7 @@ import mqtt from "mqtt";
 import { mqttBroker, reqWrite, respWrite, main } from '../config.js';
 import { msgParser, respParser } from './parser.js';
 import { uuidRemove } from '../tools/uuidPool.js';
-import { updateDB } from './updataDB.js';
+import { updateDB } from './updateDB.js';
 import { syncData } from './syncData.js';
 
 import { setValve } from '../dataflow/setValve.js';
