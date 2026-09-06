@@ -38,9 +38,9 @@ const setVfd = async (data) => {
     }
 
     // 2. 获取 k 值
-    /* const kValues = Array.from({ length: 8 }, (_, i) =>
+    const kValues = Array.from({ length: 8 }, (_, i) =>
         getValue('Switch', 'kset', `K${i + 1}`)
-    ) */
+    )
 
     function WindSetValue() {
         let Valve1WindSet = getValue('System1', 'valve1', 'windSet')
@@ -69,7 +69,14 @@ const setVfd = async (data) => {
     const windSums = SYSTEM_CONFIG.map(({ kIndices, system }) => {
         const sum = kIndices.reduce((sum, kIdx, arrIdx) => {
             const valveId = `valve${arrIdx + 1}`
-            const key = WindSetValues[kIdx - 1] === 2 ? 'windH' : 'windL'
+            let key;
+
+            if (kValues[kIdx - 1] === 1) {
+                key = kValues[kIdx - 1] === 1 ? 'windH' : 'windL'
+            } else {
+                key = WindSetValues[kIdx - 1] === 2 ? 'windH' : 'windL'
+            }
+
             return sum + (getValue(system, valveId, key) || 0)
         }, 0)
         // 加上 valve5, valve6, valve7 的 windL
