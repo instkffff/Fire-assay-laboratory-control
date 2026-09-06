@@ -43,16 +43,9 @@ const setVfd = async (data) => {
     )
 
     function WindSetValue() {
-        let Valve1WindSet = getValue('System1', 'valve1', 'windSet')
-        let Valve2WindSet = getValue('System1', 'valve2', 'windSet')
-        let Valve3WindSet = getValue('System1', 'valve3', 'windSet')
-        let Valve4WindSet = getValue('System1', 'valve4', 'windSet')
-        let Valve5WindSet = getValue('System2', 'valve1', 'windSet')
-        let Valve6WindSet = getValue('System2', 'valve2', 'windSet')
-        let Valve7WindSet = getValue('System2', 'valve3', 'windSet')
-        let Valve8WindSet = getValue('System2', 'valve4', 'windSet')
-        let WindSetValues = [Valve1WindSet, Valve2WindSet, Valve3WindSet, Valve4WindSet, Valve5WindSet, Valve6WindSet, Valve7WindSet, Valve8WindSet]
-        return WindSetValues
+        return SYSTEM_CONFIG.flatMap(({ system }) =>
+            [1, 2, 3, 4].map(i => getValue(system, `valve${i}`, 'windSet'))
+        )
     }
 
     const WindSetValues = WindSetValue()
