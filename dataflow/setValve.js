@@ -12,6 +12,8 @@ const settingPair = {
     'k8': ['System2', 'valve4', 'windSet'],
 }
 
+const DELAY_MS = 30000; // 30秒延迟
+
 /**
  * 处理阀门设置逻辑并发送数据
  * 参考 syncData.js 的流程：转换 -> 遍历 -> 发送
@@ -30,8 +32,8 @@ const setValve = (data) => {
         const val = values[key.toUpperCase()];
         if (val === undefined) continue;
 
-        // 逻辑转换：1 -> 2, 0 -> 1
-        const targetValue = val === 1 ? 2 : (val === 0 ? 1 : null);
+        // 逻辑转换：1 -> 2, 0 忽略
+        const targetValue = val === 1 ? 2 : null;
 
         if (targetValue !== null) {
             const [node, group, tag] = config;
@@ -54,6 +56,14 @@ const setValve = (data) => {
         const message = msgMaker(item);
         const json = JSON.stringify(message);
         mqttPublish(reqWrite, json);
+
+        // 30秒后将值改回1
+        const revertItem = { ...item, value: 1 };
+        setTimeout(() => {
+            const revertMessage = msgMaker(revertItem);
+            const revertJson = JSON.stringify(revertMessage);
+            mqttPublish(reqWrite, revertJson);
+        }, DELAY_MS);
     });
 };
 

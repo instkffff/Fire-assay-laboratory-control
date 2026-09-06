@@ -23,6 +23,7 @@ const VFD_IN_PAIRS = [
 const setVfd = async (data) => {
 
     // 1. 数据校验与转换 - 允许 Switch/kset、f1、f2、Scada1-2/valve1-7 触发
+    const isWindSetTrigger = data?.values?.windSet !== undefined
     const isKsetTrigger = data?.node === 'Switch' && data?.group === 'kset'
     const isF1Trigger = data?.values?.f1 !== undefined
     const isF2Trigger = data?.values?.f2 !== undefined
@@ -32,14 +33,29 @@ const setVfd = async (data) => {
         ['valve1', 'valve2', 'valve3', 'valve4', 'valve5', 'valve6', 'valve7'].includes(data.group) &&
         (data?.values?.windH !== undefined || data?.values?.windL !== undefined)
 
-    if (!isKsetTrigger && !isF1Trigger && !isF2Trigger && !isScadaValveTrigger) {
+    if (!isWindSetTrigger && !isF1Trigger && !isF2Trigger && !isScadaValveTrigger && !isKsetTrigger) {
         return
     }
 
     // 2. 获取 k 值
-    const kValues = Array.from({ length: 8 }, (_, i) =>
+    /* const kValues = Array.from({ length: 8 }, (_, i) =>
         getValue('Switch', 'kset', `K${i + 1}`)
-    )
+    ) */
+
+    function WindSetValue() {
+        let Valve1WindSet = getValue('System1', 'valve1', 'windSet')
+        let Valve2WindSet = getValue('System1', 'valve2', 'windSet')
+        let Valve3WindSet = getValue('System1', 'valve3', 'windSet')
+        let Valve4WindSet = getValue('System1', 'valve4', 'windSet')
+        let Valve5WindSet = getValue('System2', 'valve1', 'windSet')
+        let Valve6WindSet = getValue('System2', 'valve2', 'windSet')
+        let Valve7WindSet = getValue('System2', 'valve3', 'windSet')
+        let Valve8WindSet = getValue('System2', 'valve4', 'windSet')
+        let WindSetValues = [Valve1WindSet, Valve2WindSet, Valve3WindSet, Valve4WindSet, Valve5WindSet, Valve6WindSet, Valve7WindSet, Valve8WindSet]
+        return WindSetValues
+    }
+
+    const WindSetValues = WindSetValue()
 
     // 3. 分别获取 VFD 输出频率(f1)和输入频率(f2)设定值
     const fOutValues = VFD_OUT_PAIRS.map(({ scada, fTag }) =>
@@ -53,7 +69,7 @@ const setVfd = async (data) => {
     const windSums = SYSTEM_CONFIG.map(({ kIndices, system }) => {
         const sum = kIndices.reduce((sum, kIdx, arrIdx) => {
             const valveId = `valve${arrIdx + 1}`
-            const key = kValues[kIdx - 1] === 1 ? 'windH' : 'windL'
+            const key = WindSetValues[kIdx - 1] === 2 ? 'windH' : 'windL'
             return sum + (getValue(system, valveId, key) || 0)
         }, 0)
         // 加上 valve5, valve6, valve7 的 windL
