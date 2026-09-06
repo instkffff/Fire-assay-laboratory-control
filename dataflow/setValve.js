@@ -32,7 +32,9 @@ const setValve = (data) => {
         const val = values[key.toUpperCase()];
         if (val === undefined) continue;
 
+
         // 逻辑转换：1 -> 2, 0 忽略
+        // const targetValue = val === 1 ? 2 : (val === 0 ? 1 : null);
         const targetValue = val === 1 ? 2 : null;
 
         if (targetValue !== null) {
