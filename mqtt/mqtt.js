@@ -1,5 +1,5 @@
 import mqtt from "mqtt";
-import { mqttBroker, reqWrite, respWrite, main } from '../config.js';
+import { mqttBroker, reqWrite, respWrite, main, directVfd } from '../config.js';
 import { msgParser, respParser } from './parser.js';
 import { uuidRemove } from '../tools/uuidPool.js';
 import { updateDB } from './updateDB.js';
@@ -7,9 +7,11 @@ import { syncData } from './syncData.js';
 
 import { setValve } from '../dataflow/setValve.js';
 import { setVfd } from '../dataflow/setVfd.js';
+import { setVfdDirect } from '../dataflow/setVfdDirect.js';
 
 
 let client = null;
+let VfdSet = directVfd;
 
 // ---- 子逻辑：处理 respWrite 消息 ----
 const handleRespWrite = (msgString) => {
@@ -30,7 +32,12 @@ const handleMain = (msgString) => {
         updateDB(data);
         syncData(data);
         setValve(data);
-        setVfd(data);
+        if (VfdSet) {
+            // 直接设置 易损坏风阀执行器
+            setVfdDirect(data);
+        } else {
+            setVfd(data);
+        }
     } catch (e) {
         console.error('更新数据库失败:', e);
     }
