@@ -8,6 +8,8 @@ const main = '/neuron/system';
 
 const directVfd = true;
 
+const VfdType = 'HZ'
+
 const System1 = {
     valve1: ['windSet', 'windNeed', 'windReal', 'windL', 'windH'],
     valve2: ['windSet', 'windNeed', 'windReal', 'windL', 'windH'],
@@ -61,4 +63,4 @@ const Scada2 = {
     vfd: ['f1', 'f2']
 }
 
-export { System1, System2, Switch, Scada1, Scada2, mqttBroker, reqWrite, respWrite, main, directVfd }
+export { System1, System2, Switch, Scada1, Scada2, mqttBroker, reqWrite, respWrite, main, directVfd, VfdType }
